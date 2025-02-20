@@ -2,4 +2,4 @@ websockets
 cachetools
 httpx
 pbkdf2
-Crypto
+pycryptodome
