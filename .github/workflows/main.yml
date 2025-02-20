@@ -1,0 +1,34 @@
+name: Update Configs
+permissions: write-all
+
+on:
+  repository_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+        
+    - name: Stash any local changes
+      run: git stash
+      
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run Config script and save output to file
+      run: python runner.py
+
+    - name: Run Config script and save output to file
+      run: python main.py
+      
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
