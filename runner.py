@@ -11,10 +11,10 @@ raw_key = os.environ.get('SECRET_KEY')
 if raw_key is None:
     raise ValueError("SECRET_KEY environment variable is not set.")
 
+# Decode the key
 try:
-    key = base64.urlsafe_b64decode(raw_key)  # Ensure correct format
-    if len(key) != 32:
-        raise ValueError("Decoded key is not 32 bytes long.")
+    key = raw_key.encode()  # No need to re-encode, it's already base64
+    Fernet(key)  # Just to check if the key is valid
 except Exception as e:
     raise ValueError(f"Invalid SECRET_KEY format: {e}")
 
