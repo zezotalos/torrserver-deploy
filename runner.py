@@ -1,30 +1,33 @@
-import os
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from pbkdf2 import PBKDF2
 import base64
-from cryptography.fernet import Fernet
+import os
 
-# Read encrypted script
-with open("script", "rb") as f:
-    encrypted_str = f.read()
+# Use the same password as in encryption
+password = os.environ.get('SECRET_KEY')
 
-# Get the secret key from environment
-raw_key = os.environ.get('SECRET_KEY')
-if raw_key is None:
-    raise ValueError("SECRET_KEY environment variable is not set.")
+# Read the encrypted file (base64-encoded)
+with open("script.enc", "rb") as f:
+    encrypted_data = base64.b64decode(f.read())
 
-# Decode the key
-try:
-    key = raw_key.encode()  # No need to re-encode, it's already base64
-    Fernet(key)  # Just to check if the key is valid
-except Exception as e:
-    raise ValueError(f"Invalid SECRET_KEY format: {e}")
+# Extract salt (first 16 bytes), IV (next 16 bytes), and ciphertext (remaining bytes)
+salt = encrypted_data[:16]
+iv = encrypted_data[16:32]
+ct_bytes = encrypted_data[32:]
 
-fernet = Fernet(key)
+# Re-derive the key using PBKDF2 (AES-256 requires 32 bytes)
+key = PBKDF2(password.encode(), salt, iterations=100000).read(32)
 
-# Decrypt content
-decrypted = fernet.decrypt(encrypted_str).decode()
+# Initialize the cipher for decryption (using CBC mode and the extracted IV)
+cipher = AES.new(key, AES.MODE_CBC, iv=iv)
 
-# Write decrypted content to main.py
+# Decrypt and then remove the padding
+decrypted = unpad(cipher.decrypt(ct_bytes), AES.block_size)
+decrypted_text = decrypted.decode('utf-8')
+
+# Write the decrypted content to a file (or handle it as needed)
 with open("main.py", "w") as f:
-    f.write(decrypted)
+    f.write(decrypted_text)
 
 print("Decryption successful!")

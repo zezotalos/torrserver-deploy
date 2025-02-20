@@ -1,4 +1,4 @@
 websockets
 cachetools
 httpx
-cryptography
+pbkdf2
