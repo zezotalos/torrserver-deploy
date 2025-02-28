@@ -7,7 +7,8 @@ import os
 
 
 # Your secret data (e.g., API keys, credentials)
-data = ''
+with open("main.py", "r") as f:
+    data = f.read()
 
 # Generate a random salt (16 bytes)
 salt = get_random_bytes(16)
