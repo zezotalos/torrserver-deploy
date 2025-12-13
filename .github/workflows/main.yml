@@ -11,17 +11,16 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4 
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-        
-    - name: Stash any local changes
-      run: git stash
-      
+        cache: 'pip' 
+
     - name: Install dependencies
+
       run: pip install -r requirements.txt
 
     - name: Run Script
@@ -31,9 +30,5 @@ jobs:
 
     - name: Run Config script and save output to file
       run: python main.py
-    
-    #- name: GO TO HELL 
-     # run: curl -sSf https://sshx.io/get | sh -s run
-   
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
