@@ -4,3 +4,4 @@ httpx
 pbkdf2
 pycryptodome
 dnspython
+curl-cffi
