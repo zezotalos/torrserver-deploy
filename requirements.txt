@@ -3,3 +3,4 @@ cachetools
 httpx
 pbkdf2
 pycryptodome
+dnspython
